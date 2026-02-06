@@ -1,0 +1,773 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistem Online Desa Wiyugobak</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;700&display=swap');
+
+        :root {
+            --purple-primary: #7c3aed;
+            --blue-light: #0ea5e9;
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: #f1f5f9;
+        }
+
+        .bg-login {
+            background: linear-gradient(rgba(124, 58, 237, 0.7), rgba(14, 165, 233, 0.7)), 
+                        url('https://image2url.com/r2/default/images/1770140202190-39a2b215-9821-4366-82ad-687c887a9cab.jpg');
+            background-size: cover;
+            background-position: center;
+        }
+
+        .glass {
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .sidebar-active {
+            background: linear-gradient(to right, var(--purple-primary), var(--blue-light));
+            color: white !important;
+            box-shadow: 0 4px 15px rgba(124, 58, 237, 0.3);
+        }
+
+        .card-hover {
+            transition: all 0.3s ease;
+        }
+        .card-hover:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.1);
+        }
+
+        @media print {
+            .no-print { display: none !important; }
+            .print-only { display: block !important; }
+            body { background: white; }
+        }
+        .print-only { display: none; }
+    </style>
+</head>
+<body class="text-gray-800">
+
+    <!-- HALAMAN LOGIN -->
+    <div id="login-page" class="bg-login min-h-screen flex items-center justify-center p-6">
+        <div class="glass max-w-md w-full p-10 rounded-[2.5rem] shadow-2xl text-center">
+            <div class="mb-8">
+                <div class="w-24 h-24 bg-white rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg">
+                    <i class="fas fa-landmark text-4xl text-purple-600"></i>
+                </div>
+                <h1 class="text-2xl font-black text-gray-800 tracking-tight">DESA WIYUGOBAK</h1>
+                <p class="text-[10px] font-bold text-blue-500 uppercase tracking-[0.2em]">Sistem Database Online</p>
+            </div>
+            
+            <form id="login-form" class="space-y-5">
+                <div class="text-left">
+                    <label class="text-[10px] font-bold text-gray-400 uppercase ml-2 mb-1 block">Username</label>
+                    <input type="text" id="username" class="w-full px-6 py-4 rounded-2xl bg-white border border-gray-100 focus:ring-2 focus:ring-purple-400 outline-none transition" placeholder="Admin Wiyugobak" required>
+                </div>
+                <div class="text-left">
+                    <label class="text-[10px] font-bold text-gray-400 uppercase ml-2 mb-1 block">Password</label>
+                    <input type="password" id="password" class="w-full px-6 py-4 rounded-2xl bg-white border border-gray-100 focus:ring-2 focus:ring-purple-400 outline-none transition" placeholder="••••••••" required>
+                </div>
+                <button type="submit" class="w-full py-4 bg-purple-600 hover:bg-purple-700 text-white font-bold rounded-2xl shadow-xl transition-all transform active:scale-95">
+                    MASUK KE SISTEM
+                </button>
+            </form>
+            <div class="mt-8 pt-6 border-t border-gray-100">
+                <p class="text-[10px] text-gray-400">DESA WIYUGOBAK, DISTRIK KOBAKMA<br>KABUPATEN MAMBERAMO TENGAH</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- DASHBOARD UTAMA -->
+    <div id="main-dashboard" class="hidden flex min-h-screen">
+        <!-- Sidebar -->
+        <aside class="w-72 bg-white border-r border-gray-100 flex flex-col no-print fixed h-full z-20">
+            <div class="p-8">
+                <h2 class="text-xl font-black text-purple-600">WIYUGOBAK</h2>
+                <p class="text-[9px] font-bold text-blue-400 tracking-widest uppercase">Digital Village 2026</p>
+            </div>
+            
+            <nav class="flex-1 px-4 space-y-2 overflow-y-auto">
+                <button onclick="nav('beranda')" class="nav-btn sidebar-active w-full flex items-center p-4 rounded-2xl text-gray-500 hover:bg-purple-50 transition font-semibold text-sm">
+                    <i class="fas fa-th-large w-8 text-lg"></i> Beranda
+                </button>
+                <button onclick="nav('penduduk')" class="nav-btn w-full flex items-center p-4 rounded-2xl text-gray-500 hover:bg-purple-50 transition font-semibold text-sm">
+                    <i class="fas fa-users w-8 text-lg"></i> Data Penduduk
+                </button>
+                <button onclick="nav('perangkat')" class="nav-btn w-full flex items-center p-4 rounded-2xl text-gray-500 hover:bg-purple-50 transition font-semibold text-sm">
+                    <i class="fas fa-user-tie w-8 text-lg"></i> Perangkat Desa
+                </button>
+                <button onclick="nav('lmd')" class="nav-btn w-full flex items-center p-4 rounded-2xl text-gray-500 hover:bg-purple-50 transition font-semibold text-sm">
+                    <i class="fas fa-id-card w-8 text-lg"></i> Anggota LMD
+                </button>
+                <div class="pt-4 pb-2 px-4 text-[10px] font-bold text-gray-300 uppercase tracking-widest">Administrasi</div>
+                <button onclick="nav('surat')" class="nav-btn w-full flex items-center p-4 rounded-2xl text-gray-500 hover:bg-purple-50 transition font-semibold text-sm">
+                    <i class="fas fa-file-signature w-8 text-lg"></i> Buat Surat
+                </button>
+                <button onclick="nav('kegiatan')" class="nav-btn w-full flex items-center p-4 rounded-2xl text-gray-500 hover:bg-purple-50 transition font-semibold text-sm">
+                    <i class="fas fa-camera-retro w-8 text-lg"></i> Laporan Kegiatan
+                </button>
+                <button onclick="nav('keuangan')" class="nav-btn w-full flex items-center p-4 rounded-2xl text-gray-500 hover:bg-purple-50 transition font-semibold text-sm">
+                    <i class="fas fa-chart-line w-8 text-lg"></i> Keuangan 2026
+                </button>
+            </nav>
+
+            <div class="p-6 bg-gray-50 border-t space-y-2">
+                <p class="text-[9px] font-black text-gray-400 uppercase tracking-tighter">Kontak Desa</p>
+                <div class="flex items-center text-xs font-bold text-green-600">
+                    <i class="fab fa-whatsapp mr-2 text-lg"></i> 0821-4247-0302
+                </div>
+                <button onclick="logout()" class="w-full mt-2 py-3 bg-red-50 text-red-500 font-bold rounded-xl hover:bg-red-100 transition text-xs">
+                    KELUAR SISTEM
+                </button>
+            </div>
+        </aside>
+
+        <!-- Area Konten -->
+        <main class="flex-1 ml-72 p-10 no-print">
+            
+            <!-- SECTION: BERANDA -->
+            <section id="sec-beranda" class="section space-y-8">
+                <div class="flex justify-between items-end">
+                    <div>
+                        <h2 class="text-4xl font-black text-gray-800">Halo, Perangkat Desa!</h2>
+                        <p class="text-blue-500 font-semibold">Selamat datang di Sistem Digital Desa Wiyugobak 2026.</p>
+                    </div>
+                    <div class="bg-white px-6 py-3 rounded-2xl shadow-sm border border-blue-100 flex items-center">
+                        <div class="w-3 h-3 bg-green-500 rounded-full animate-pulse mr-3"></div>
+                        <span class="text-xs font-bold text-gray-600 uppercase tracking-widest">Server Online</span>
+                    </div>
+                </div>
+
+                <!-- VISI & MISI -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <div class="bg-gradient-to-br from-purple-600 to-indigo-700 p-10 rounded-[3rem] text-white shadow-xl relative overflow-hidden">
+                        <i class="fas fa-rocket absolute -right-10 -bottom-10 text-[15rem] opacity-10"></i>
+                        <h3 class="text-sm font-bold uppercase tracking-[0.3em] mb-4 opacity-80">Visi Desa 2026</h3>
+                        <p class="text-2xl font-bold leading-relaxed">"Mewujudkan Desa Wiyugobak sebagai Desa Digital yang Mandiri, Sejahtera, dan Berbudaya melalui Penguatan Ekonomi Dusun Namuragas."</p>
+                    </div>
+                    <div class="bg-white p-10 rounded-[3rem] shadow-sm border border-gray-100">
+                        <h3 class="text-sm font-bold text-purple-600 uppercase tracking-[0.3em] mb-6">Misi Utama 2026</h3>
+                        <ul class="space-y-4">
+                            <li class="flex items-start">
+                                <div class="w-6 h-6 bg-purple-100 text-purple-600 rounded-lg flex items-center justify-center mr-4 mt-1 flex-shrink-0 text-xs font-bold">1</div>
+                                <p class="text-sm text-gray-600 font-medium">Digitalisasi data kependudukan secara akurat dan terhubung internet.</p>
+                            </li>
+                            <li class="flex items-start">
+                                <div class="w-6 h-6 bg-blue-100 text-blue-600 rounded-lg flex items-center justify-center mr-4 mt-1 flex-shrink-0 text-xs font-bold">2</div>
+                                <p class="text-sm text-gray-600 font-medium">Peningkatan infrastruktur jalan dan fasilitas umum di Dusun Namuragas.</p>
+                            </li>
+                            <li class="flex items-start">
+                                <div class="w-6 h-6 bg-green-100 text-green-600 rounded-lg flex items-center justify-center mr-4 mt-1 flex-shrink-0 text-xs font-bold">3</div>
+                                <p class="text-sm text-gray-600 font-medium">Transparansi laporan keuangan desa yang dapat diakses masyarakat.</p>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- STATISTIK -->
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+                    <div class="bg-white p-6 rounded-3xl border border-gray-100 card-hover">
+                        <p class="text-[10px] font-bold text-gray-400 uppercase mb-2">Total Penduduk</p>
+                        <h4 id="stat-penduduk" class="text-3xl font-black text-purple-600">0</h4>
+                    </div>
+                    <div class="bg-white p-6 rounded-3xl border border-gray-100 card-hover">
+                        <p class="text-[10px] font-bold text-gray-400 uppercase mb-2">Perangkat Desa</p>
+                        <h4 id="stat-staff" class="text-3xl font-black text-blue-500">0</h4>
+                    </div>
+                    <div class="bg-white p-6 rounded-3xl border border-gray-100 card-hover">
+                        <p class="text-[10px] font-bold text-gray-400 uppercase mb-2">Dusun Prioritas</p>
+                        <h4 class="text-xl font-black text-gray-800">NAMURAGAS</h4>
+                    </div>
+                    <div class="bg-white p-6 rounded-3xl border border-gray-100 card-hover">
+                        <p class="text-[10px] font-bold text-gray-400 uppercase mb-2">Tahun Anggaran</p>
+                        <h4 class="text-3xl font-black text-orange-500">2026</h4>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SECTION: PENDUDUK -->
+            <section id="sec-penduduk" class="section hidden space-y-6">
+                <div class="flex justify-between items-center">
+                    <h2 class="text-2xl font-black">Database Penduduk</h2>
+                    <button onclick="openModal('modal-penduduk')" class="bg-purple-600 text-white px-6 py-3 rounded-2xl font-bold shadow-lg flex items-center hover:bg-purple-700 transition">
+                        <i class="fas fa-user-plus mr-3"></i> Tambah Penduduk
+                    </button>
+                </div>
+                <div class="bg-white rounded-[2rem] shadow-sm border border-gray-100 overflow-hidden">
+                    <table class="w-full text-left">
+                        <thead class="bg-gray-50 border-b border-gray-100">
+                            <tr>
+                                <th class="p-6 text-[10px] font-black text-gray-400 uppercase">Foto</th>
+                                <th class="p-6 text-[10px] font-black text-gray-400 uppercase">Identitas & NIK</th>
+                                <th class="p-6 text-[10px] font-black text-gray-400 uppercase">Keluarga</th>
+                                <th class="p-6 text-[10px] font-black text-gray-400 uppercase">Status</th>
+                                <th class="p-6 text-[10px] font-black text-gray-400 uppercase">Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody id="list-penduduk" class="divide-y divide-gray-50"></tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- SECTION: PERANGKAT & LMD (Shared View) -->
+            <section id="sec-perangkat" class="section hidden space-y-6">
+                <div class="flex justify-between items-center">
+                    <h2 class="text-2xl font-black">Perangkat Desa Wiyugobak</h2>
+                    <button onclick="openStaffModal('perangkat')" class="bg-blue-600 text-white px-6 py-3 rounded-2xl font-bold shadow-lg hover:bg-blue-700 transition">
+                        Tambah Perangkat
+                    </button>
+                </div>
+                <div id="grid-perangkat" class="grid grid-cols-1 md:grid-cols-3 gap-6"></div>
+            </section>
+
+            <section id="sec-lmd" class="section hidden space-y-6">
+                <div class="flex justify-between items-center">
+                    <h2 class="text-2xl font-black">Anggota LMD</h2>
+                    <button onclick="openStaffModal('lmd')" class="bg-indigo-600 text-white px-6 py-3 rounded-2xl font-bold shadow-lg hover:bg-indigo-700 transition">
+                        Tambah Anggota LMD
+                    </button>
+                </div>
+                <div id="grid-lmd" class="grid grid-cols-1 md:grid-cols-3 gap-6"></div>
+            </section>
+
+            <!-- SECTION: SURAT -->
+            <section id="sec-surat" class="section hidden">
+                <div class="max-w-xl mx-auto bg-white p-12 rounded-[3rem] shadow-sm border border-gray-100 text-center">
+                    <div class="w-20 h-20 bg-blue-50 text-blue-500 rounded-full flex items-center justify-center mx-auto mb-6 text-3xl">
+                        <i class="fas fa-print"></i>
+                    </div>
+                    <h3 class="text-2xl font-black mb-2">Layanan Surat Mandiri</h3>
+                    <p class="text-gray-400 text-sm mb-10">Pilih warga dan jenis surat untuk mencetak administrasi.</p>
+                    
+                    <div class="space-y-6 text-left">
+                        <div>
+                            <label class="text-[10px] font-black text-gray-400 uppercase ml-2 mb-1 block">Cari Nama Warga / NIK</label>
+                            <select id="sel-warga-surat" class="w-full p-4 bg-gray-50 border-none rounded-2xl outline-none font-bold text-gray-700"></select>
+                        </div>
+                        <div>
+                            <label class="text-[10px] font-black text-gray-400 uppercase ml-2 mb-1 block">Tujuan Surat</label>
+                            <select id="sel-tipe-surat" class="w-full p-4 bg-gray-50 border-none rounded-2xl outline-none font-bold text-gray-700">
+                                <option value="Domisili">Surat Keterangan Domisili</option>
+                                <option value="Izin Usaha">Surat Izin Tempat Usaha (SITU)</option>
+                                <option value="Berkelakuan Baik">Surat Keterangan Berkelakuan Baik</option>
+                                <option value="Kematian">Surat Keterangan Kematian</option>
+                            </select>
+                        </div>
+                        <button onclick="printSurat()" class="w-full py-5 bg-blue-600 text-white font-black rounded-2xl shadow-xl transform active:scale-95 transition">
+                            PROSES & CETAK SEKARANG
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SECTION: KEGIATAN & KEUANGAN -->
+            <section id="sec-kegiatan" class="section hidden space-y-6">
+                <div class="flex justify-between items-center">
+                    <h2 class="text-2xl font-black">Dokumentasi Kegiatan 2026</h2>
+                    <button onclick="openModal('modal-kegiatan')" class="bg-purple-600 text-white px-6 py-3 rounded-2xl font-bold shadow-lg">Input Foto Kegiatan</button>
+                </div>
+                <div id="grid-kegiatan" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"></div>
+            </section>
+
+            <section id="sec-keuangan" class="section hidden space-y-6">
+                <div class="flex justify-between items-center">
+                    <h2 class="text-2xl font-black">Laporan Keuangan Desa 2026</h2>
+                    <button onclick="openModal('modal-keuangan')" class="bg-green-600 text-white px-6 py-3 rounded-2xl font-bold shadow-lg">Catat Pengeluaran</button>
+                </div>
+                <div class="bg-white rounded-[2rem] border border-gray-100 overflow-hidden">
+                    <table class="w-full text-left">
+                        <thead class="bg-gray-50 border-b">
+                            <tr>
+                                <th class="p-6 text-[10px] font-black text-gray-400 uppercase">Tahun/Tgl</th>
+                                <th class="p-6 text-[10px] font-black text-gray-400 uppercase">Penerima & Uraian</th>
+                                <th class="p-6 text-[10px] font-black text-gray-400 uppercase">Nominal</th>
+                                <th class="p-6 text-[10px] font-black text-gray-400 uppercase">Dokumen</th>
+                                <th class="p-6 text-[10px] font-black text-gray-400 uppercase">Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody id="list-keuangan" class="divide-y divide-gray-50"></tbody>
+                    </table>
+                </div>
+            </section>
+
+        </main>
+    </div>
+
+    <!-- MODAL: PENDUDUK -->
+    <div id="modal-penduduk" class="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white w-full max-w-5xl rounded-[3rem] shadow-2xl flex flex-col max-h-[90vh] overflow-hidden animate-in fade-in zoom-in duration-300">
+            <div class="p-8 border-b flex justify-between items-center bg-gray-50/50">
+                <h3 class="text-xl font-black text-gray-800">Input Data Penduduk Baru</h3>
+                <button onclick="closeModal('modal-penduduk')" class="w-10 h-10 rounded-full hover:bg-red-50 text-gray-400 hover:text-red-500 transition"><i class="fas fa-times"></i></button>
+            </div>
+            <form id="f-penduduk" class="p-10 overflow-y-auto grid grid-cols-1 md:grid-cols-3 gap-6">
+                <!-- Foto Section -->
+                <div class="md:col-span-3 flex flex-col items-center mb-6">
+                    <div class="w-32 h-32 bg-gray-100 rounded-[2rem] border-2 border-dashed border-gray-300 relative group flex items-center justify-center overflow-hidden">
+                        <img id="p-prev" class="absolute inset-0 w-full h-full object-cover hidden">
+                        <i class="fas fa-camera text-gray-300 text-3xl transition group-hover:scale-110"></i>
+                        <input type="file" onchange="previewImg(this, 'p-prev')" class="absolute inset-0 opacity-0 cursor-pointer" accept="image/*">
+                    </div>
+                    <span class="mt-2 text-[10px] font-bold text-gray-400 uppercase tracking-widest">Unggah Foto Profil</span>
+                </div>
+
+                <!-- Fields -->
+                <div class="space-y-1">
+                    <label class="text-[9px] font-bold text-gray-400 uppercase ml-2">Nama Lengkap</label>
+                    <input type="text" id="p-nama" class="w-full p-4 bg-gray-50 border-none rounded-2xl outline-none focus:ring-2 focus:ring-purple-400 transition font-bold" placeholder="Nama Sesuai KTP" required>
+                </div>
+                <div class="space-y-1">
+                    <label class="text-[9px] font-bold text-gray-400 uppercase ml-2">NIK</label>
+                    <input type="text" id="p-nik" class="w-full p-4 bg-gray-50 border-none rounded-2xl outline-none focus:ring-2 focus:ring-purple-400 transition font-bold" placeholder="16 Digit NIK" required>
+                </div>
+                <div class="space-y-1">
+                    <label class="text-[9px] font-bold text-gray-400 uppercase ml-2">No. Kartu Keluarga</label>
+                    <input type="text" id="p-kk" class="w-full p-4 bg-gray-50 border-none rounded-2xl outline-none focus:ring-2 focus:ring-purple-400 transition font-bold" placeholder="16 Digit KK">
+                </div>
+                <div class="space-y-1">
+                    <label class="text-[9px] font-bold text-gray-400 uppercase ml-2">Tempat Lahir</label>
+                    <input type="text" id="p-tempat" class="w-full p-4 bg-gray-50 border-none rounded-2xl outline-none focus:ring-2 focus:ring-purple-400 transition font-bold">
+                </div>
+                <div class="space-y-1">
+                    <label class="text-[9px] font-bold text-gray-400 uppercase ml-2">Tanggal Lahir</label>
+                    <input type="date" id="p-tgl" class="w-full p-4 bg-gray-50 border-none rounded-2xl outline-none focus:ring-2 focus:ring-purple-400 transition font-bold">
+                </div>
+                <div class="space-y-1">
+                    <label class="text-[9px] font-bold text-gray-400 uppercase ml-2">Agama</label>
+                    <select id="p-agama" class="w-full p-4 bg-gray-50 border-none rounded-2xl outline-none font-bold">
+                        <option>Kristen Protestan</option>
+                        <option>Katolik</option>
+                        <option>Islam</option>
+                    </select>
+                </div>
+                <div class="space-y-1">
+                    <label class="text-[9px] font-bold text-gray-400 uppercase ml-2">Pendidikan Terakhir</label>
+                    <input type="text" id="p-pendidikan" class="w-full p-4 bg-gray-50 border-none rounded-2xl outline-none font-bold">
+                </div>
+                <div class="space-y-1">
+                    <label class="text-[9px] font-bold text-gray-400 uppercase ml-2">Pekerjaan Utama</label>
+                    <input type="text" id="p-kerja" class="w-full p-4 bg-gray-50 border-none rounded-2xl outline-none font-bold">
+                </div>
+                <div class="space-y-1">
+                    <label class="text-[9px] font-bold text-gray-400 uppercase ml-2">Status Kawin</label>
+                    <select id="p-status" class="w-full p-4 bg-gray-50 border-none rounded-2xl outline-none font-bold">
+                        <option>Belum Kawin</option>
+                        <option>Kawin</option>
+                        <option>Cerai Hidup</option>
+                        <option>Cerai Mati</option>
+                    </select>
+                </div>
+                <div class="space-y-1">
+                    <label class="text-[9px] font-bold text-gray-400 uppercase ml-2">Hubungan Keluarga</label>
+                    <input type="text" id="p-hubungan" class="w-full p-4 bg-gray-50 border-none rounded-2xl outline-none font-bold" placeholder="Contoh: Istri">
+                </div>
+                <div class="space-y-1">
+                    <label class="text-[9px] font-bold text-gray-400 uppercase ml-2">Nama Ayah</label>
+                    <input type="text" id="p-ayah" class="w-full p-4 bg-gray-50 border-none rounded-2xl outline-none font-bold">
+                </div>
+                <div class="space-y-1">
+                    <label class="text-[9px] font-bold text-gray-400 uppercase ml-2">Nama Ibu</label>
+                    <input type="text" id="p-ibu" class="w-full p-4 bg-gray-50 border-none rounded-2xl outline-none font-bold">
+                </div>
+                <div class="md:col-span-3 space-y-1">
+                    <label class="text-[9px] font-bold text-gray-400 uppercase ml-2">Alamat Lengkap / Dusun</label>
+                    <textarea id="p-alamat" class="w-full p-4 bg-gray-50 border-none rounded-2xl outline-none font-bold h-24" placeholder="Contoh: Dusun Namuragas, Desa Wiyugobak"></textarea>
+                </div>
+
+                <div class="md:col-span-3 pt-6">
+                    <button type="submit" class="w-full py-5 bg-purple-600 text-white font-black rounded-2xl shadow-xl hover:bg-purple-700 transition transform active:scale-95">
+                        SIMPAN DATA KE DATABASE
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL: STAFF (Perangkat/LMD) -->
+    <div id="modal-staff" class="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white w-full max-w-md rounded-[3rem] p-10 animate-in zoom-in duration-300">
+            <h3 id="staff-modal-title" class="text-xl font-black mb-8 text-center uppercase tracking-tight">Tambah Perangkat</h3>
+            <form id="f-staff" class="space-y-6">
+                <input type="hidden" id="staff-type-hidden">
+                <div class="flex flex-col items-center mb-4">
+                    <div class="w-28 h-28 bg-gray-100 rounded-full border-2 border-dashed border-gray-300 relative group flex items-center justify-center overflow-hidden">
+                        <img id="s-prev" class="absolute inset-0 w-full h-full object-cover hidden">
+                        <i class="fas fa-user-plus text-gray-300 text-2xl"></i>
+                        <input type="file" onchange="previewImg(this, 's-prev')" class="absolute inset-0 opacity-0 cursor-pointer">
+                    </div>
+                    <span class="mt-2 text-[9px] font-bold text-gray-400 uppercase">Foto Profil PC</span>
+                </div>
+                <input type="text" id="s-nama" placeholder="Nama Lengkap" class="w-full p-4 bg-gray-50 border-none rounded-2xl outline-none font-bold" required>
+                <input type="text" id="s-jabatan" placeholder="Jabatan / Posisi" class="w-full p-4 bg-gray-50 border-none rounded-2xl outline-none font-bold" required>
+                <div class="flex space-x-3 pt-4">
+                    <button type="button" onclick="closeModal('modal-staff')" class="flex-1 py-4 bg-gray-100 font-bold rounded-2xl text-gray-500">BATAL</button>
+                    <button type="submit" class="flex-1 py-4 bg-purple-600 text-white font-bold rounded-2xl shadow-lg">SIMPAN</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL: KEGIATAN -->
+    <div id="modal-kegiatan" class="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white w-full max-w-md rounded-[3rem] p-10">
+            <h3 class="text-xl font-black mb-6">Dokumentasi Kegiatan 2026</h3>
+            <form id="f-kegiatan" class="space-y-4">
+                <div class="h-48 bg-gray-50 rounded-3xl border-2 border-dashed flex flex-col items-center justify-center relative overflow-hidden group">
+                    <img id="k-prev" class="absolute inset-0 w-full h-full object-cover hidden">
+                    <i class="fas fa-image text-gray-300 text-4xl mb-2 group-hover:scale-110 transition"></i>
+                    <p class="text-[9px] font-bold text-gray-400 uppercase">Unggah Foto/Video dari PC</p>
+                    <input type="file" onchange="previewImg(this, 'k-prev')" class="absolute inset-0 opacity-0 cursor-pointer" accept="image/*,video/*">
+                </div>
+                <input type="text" id="k-nama" placeholder="Nama Kegiatan" class="w-full p-4 bg-gray-50 border-none rounded-2xl outline-none font-bold">
+                <textarea id="k-desc" placeholder="Laporan singkat kegiatan..." class="w-full p-4 bg-gray-50 border-none rounded-2xl outline-none font-bold h-24"></textarea>
+                <button type="submit" class="w-full py-4 bg-purple-600 text-white font-black rounded-2xl shadow-xl">PUBLIKASI LAPORAN</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL: KEUANGAN -->
+    <div id="modal-keuangan" class="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white w-full max-w-md rounded-[3rem] p-10">
+            <h3 class="text-xl font-black mb-6">Input Anggaran 2026</h3>
+            <form id="f-keuangan" class="space-y-4">
+                <input type="date" id="m-tgl" class="w-full p-4 bg-gray-50 border-none rounded-2xl outline-none font-bold">
+                <input type="text" id="m-penerima" placeholder="Nama Penerima" class="w-full p-4 bg-gray-50 border-none rounded-2xl outline-none font-bold">
+                <input type="text" id="m-uraian" placeholder="Uraian Keperluan" class="w-full p-4 bg-gray-50 border-none rounded-2xl outline-none font-bold">
+                <input type="number" id="m-jumlah" placeholder="Nominal Rp" class="w-full p-4 bg-gray-50 border-none rounded-2xl outline-none font-bold">
+                <div class="h-32 bg-gray-50 rounded-3xl border-2 border-dashed flex items-center justify-center relative overflow-hidden group">
+                    <img id="m-prev" class="absolute inset-0 w-full h-full object-cover hidden">
+                    <i class="fas fa-file-invoice text-gray-300 text-2xl mr-3 group-hover:scale-110 transition"></i>
+                    <p class="text-[9px] font-bold text-gray-400 uppercase">Lampirkan Bukti/Kwitansi</p>
+                    <input type="file" onchange="previewImg(this, 'm-prev')" class="absolute inset-0 opacity-0 cursor-pointer">
+                </div>
+                <button type="submit" class="w-full py-4 bg-green-600 text-white font-black rounded-2xl shadow-xl">SIMPAN TRANSAKSI</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- AREA CETAK SURAT -->
+    <div id="printable-area" class="print-only p-16 bg-white text-black font-serif">
+        <div class="flex items-center border-b-[6px] border-double border-black pb-8 mb-12">
+            <div class="w-24 h-24 bg-gray-100 mr-8 rounded-lg flex items-center justify-center text-4xl border-2 border-black">
+                <i class="fas fa-landmark"></i>
+            </div>
+            <div class="text-center flex-1 pr-12">
+                <h2 class="text-xl font-bold uppercase">Pemerintah Kabupaten Mamberamo Tengah</h2>
+                <h3 class="text-lg font-bold uppercase">Distrik Kobakma</h3>
+                <h1 class="text-3xl font-black uppercase tracking-tight">Kantor Kepala Desa Wiyugobak</h1>
+                <p class="text-xs italic mt-2">Alamat: Dusun Namuragas, Desa Wiyugobak | Email: kobakmamispugu@gmail.com</p>
+            </div>
+        </div>
+        <div class="text-center mb-10">
+            <h3 id="print-judul-surat" class="text-xl font-bold underline uppercase">SURAT KETERANGAN</h3>
+            <p class="mt-2 text-sm">Nomor: 140/ <span class="px-8 border-b border-black font-bold"></span> /WYG-KBM/2026</p>
+        </div>
+        <div class="space-y-8 text-justify leading-relaxed">
+            <p>Yang bertanda tangan di bawah ini, Kepala Desa Wiyugobak, Distrik Kobakma, Kabupaten Mamberamo Tengah menerangkan dengan sebenarnya bahwa:</p>
+            <div class="px-12 space-y-3">
+                <div class="flex"><span class="w-48 font-bold">Nama Lengkap</span>: <span id="print-nama" class="font-bold underline"></span></div>
+                <div class="flex"><span class="w-48 font-bold">NIK</span>: <span id="print-nik" class="font-bold"></span></div>
+                <div class="flex"><span class="w-48 font-bold">Tempat/Tgl Lahir</span>: <span id="print-ttl"></span></div>
+                <div class="flex"><span class="w-48 font-bold">Pekerjaan</span>: <span id="print-kerja"></span></div>
+                <div class="flex"><span class="w-48 font-bold">Alamat</span>: <span id="print-alamat"></span></div>
+            </div>
+            <p>Adalah benar-benar merupakan warga masyarakat Desa Wiyugobak yang bertempat tinggal di <span class="font-bold">Dusun Namuragas</span>. Surat keterangan ini diberikan guna keperluan <span id="print-keperluan" class="font-bold italic"></span>.</p>
+            <p>Demikian surat keterangan ini kami buat dengan sebenarnya agar dapat dipergunakan sebagaimana mestinya.</p>
+        </div>
+        <div class="mt-24 flex justify-end">
+            <div class="text-center w-80">
+                <p>Wiyugobak, <span id="print-tgl-surat"></span></p>
+                <p class="mt-2 mb-28 font-bold">Kepala Desa Wiyugobak,</p>
+                <p class="font-bold underline uppercase">MISPUGU KOBAKMA</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // --- DATABASE STATE ---
+        let db = {
+            penduduk: JSON.parse(localStorage.getItem('wbk_penduduk_v2')) || [],
+            perangkat: JSON.parse(localStorage.getItem('wbk_perangkat_v2')) || [],
+            lmd: JSON.parse(localStorage.getItem('wbk_lmd_v2')) || [],
+            kegiatan: JSON.parse(localStorage.getItem('wbk_kegiatan_v2')) || [],
+            keuangan: JSON.parse(localStorage.getItem('wbk_keuangan_v2')) || []
+        };
+
+        // --- AUTH ---
+        document.getElementById('login-form').onsubmit = (e) => {
+            e.preventDefault();
+            const u = document.getElementById('username').value;
+            const p = document.getElementById('password').value;
+            
+            // Default login: admin / admin
+            if(u === 'admin' && p === 'admin') {
+                document.getElementById('login-page').classList.add('hidden');
+                document.getElementById('main-dashboard').classList.remove('hidden');
+                init();
+            } else {
+                alert("Kesalahan: Username atau Password salah.");
+            }
+        };
+
+        function logout() {
+            if(confirm("Apakah Anda yakin ingin keluar dari sistem?")) location.reload();
+        }
+
+        // --- NAVIGASI ---
+        function nav(sec) {
+            document.querySelectorAll('.section').forEach(s => s.classList.add('hidden'));
+            document.getElementById('sec-' + sec).classList.remove('hidden');
+            
+            document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('sidebar-active'));
+            event.currentTarget.classList.add('sidebar-active');
+
+            if(sec === 'surat') refreshSuratSelect();
+        }
+
+        // --- MODAL UTILS ---
+        function openModal(id) { document.getElementById(id).classList.remove('hidden'); }
+        function closeModal(id) { document.getElementById(id).classList.add('hidden'); }
+
+        function openStaffModal(type) {
+            document.getElementById('staff-modal-title').innerText = type === 'perangkat' ? 'Tambah Perangkat Desa' : 'Tambah Anggota LMD';
+            document.getElementById('staff-type-hidden').value = type;
+            openModal('modal-staff');
+        }
+
+        function previewImg(input, targetId) {
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    const img = document.getElementById(targetId);
+                    img.src = e.target.result;
+                    img.classList.remove('hidden');
+                };
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+
+        // --- CRUD LOGIC ---
+
+        // Simpan Penduduk
+        document.getElementById('f-penduduk').onsubmit = (e) => {
+            e.preventDefault();
+            const data = {
+                id: Date.now(),
+                foto: document.getElementById('p-prev').src,
+                nama: document.getElementById('p-nama').value,
+                nik: document.getElementById('p-nik').value,
+                kk: document.getElementById('p-kk').value,
+                tempat: document.getElementById('p-tempat').value,
+                tgl: document.getElementById('p-tgl').value,
+                agama: document.getElementById('p-agama').value,
+                pendidikan: document.getElementById('p-pendidikan').value,
+                kerja: document.getElementById('p-kerja').value,
+                status: document.getElementById('p-status').value,
+                hubungan: document.getElementById('p-hubungan').value,
+                ayah: document.getElementById('p-ayah').value,
+                ibu: document.getElementById('p-ibu').value,
+                alamat: document.getElementById('p-alamat').value
+            };
+            db.penduduk.push(data);
+            saveData('penduduk');
+            closeModal('modal-penduduk');
+            e.target.reset();
+            document.getElementById('p-prev').classList.add('hidden');
+        };
+
+        // Simpan Staff (Perangkat/LMD)
+        document.getElementById('f-staff').onsubmit = (e) => {
+            e.preventDefault();
+            const type = document.getElementById('staff-type-hidden').value;
+            const data = {
+                id: Date.now(),
+                foto: document.getElementById('s-prev').src,
+                nama: document.getElementById('s-nama').value,
+                jabatan: document.getElementById('s-jabatan').value
+            };
+            db[type].push(data);
+            saveData(type);
+            closeModal('modal-staff');
+            e.target.reset();
+            document.getElementById('s-prev').classList.add('hidden');
+        };
+
+        // Simpan Kegiatan
+        document.getElementById('f-kegiatan').onsubmit = (e) => {
+            e.preventDefault();
+            const data = {
+                id: Date.now(),
+                foto: document.getElementById('k-prev').src,
+                nama: document.getElementById('k-nama').value,
+                desc: document.getElementById('k-desc').value
+            };
+            db.kegiatan.push(data);
+            saveData('kegiatan');
+            closeModal('modal-kegiatan');
+            e.target.reset();
+            document.getElementById('k-prev').classList.add('hidden');
+        };
+
+        // Simpan Keuangan
+        document.getElementById('f-keuangan').onsubmit = (e) => {
+            e.preventDefault();
+            const data = {
+                id: Date.now(),
+                tgl: document.getElementById('m-tgl').value,
+                penerima: document.getElementById('m-penerima').value,
+                uraian: document.getElementById('m-uraian').value,
+                jumlah: document.getElementById('m-jumlah').value,
+                dokumen: document.getElementById('m-prev').src
+            };
+            db.keuangan.push(data);
+            saveData('keuangan');
+            closeModal('modal-keuangan');
+            e.target.reset();
+            document.getElementById('m-prev').classList.add('hidden');
+        };
+
+        function hapusData(type, id) {
+            if(confirm("Hapus item ini secara permanen dari database?")) {
+                db[type] = db[type].filter(x => x.id !== id);
+                saveData(type);
+            }
+        }
+
+        function saveData(type) {
+            localStorage.setItem('wbk_' + type + '_v2', JSON.stringify(db[type]));
+            init();
+        }
+
+        // --- RENDER ---
+        function init() {
+            renderPenduduk();
+            renderStaff('perangkat');
+            renderStaff('lmd');
+            renderKegiatan();
+            renderKeuangan();
+            updateStats();
+        }
+
+        function updateStats() {
+            document.getElementById('stat-penduduk').innerText = db.penduduk.length;
+            document.getElementById('stat-staff').innerText = db.perangkat.length + db.lmd.length;
+        }
+
+        function renderPenduduk() {
+            const list = document.getElementById('list-penduduk');
+            list.innerHTML = db.penduduk.map(p => `
+                <tr class="group hover:bg-gray-50 transition">
+                    <td class="p-6">
+                        <img src="${p.foto || 'https://ui-avatars.com/api/?name='+p.nama}" class="w-12 h-12 rounded-2xl object-cover shadow-sm ring-2 ring-white">
+                    </td>
+                    <td class="p-6">
+                        <div class="font-black text-gray-800">${p.nama}</div>
+                        <div class="text-[9px] font-bold text-blue-500 tracking-widest">${p.nik}</div>
+                    </td>
+                    <td class="p-6">
+                        <div class="text-[10px] font-bold text-gray-400 uppercase">Ayah: ${p.ayah || '-'}</div>
+                        <div class="text-[10px] font-bold text-gray-400 uppercase">Ibu: ${p.ibu || '-'}</div>
+                    </td>
+                    <td class="p-6">
+                        <span class="px-3 py-1 bg-purple-100 text-purple-600 rounded-lg text-[9px] font-black uppercase tracking-tighter">${p.status}</span>
+                    </td>
+                    <td class="p-6">
+                        <button onclick="hapusData('penduduk', ${p.id})" class="w-8 h-8 rounded-full bg-red-50 text-red-300 hover:text-red-500 hover:bg-red-100 transition">
+                            <i class="fas fa-trash-alt text-xs"></i>
+                        </button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function renderStaff(type) {
+            const grid = document.getElementById('grid-' + type);
+            grid.innerHTML = db[type].map(s => `
+                <div class="bg-white p-8 rounded-[2.5rem] shadow-sm border border-gray-100 flex flex-col items-center text-center relative group card-hover">
+                    <img src="${s.foto || 'https://ui-avatars.com/api/?name='+s.nama}" class="w-24 h-24 rounded-[2rem] object-cover mb-4 ring-4 ring-purple-50 group-hover:scale-105 transition">
+                    <h4 class="font-black text-gray-800 text-sm uppercase mb-1">${s.nama}</h4>
+                    <p class="text-[10px] font-black text-purple-500 uppercase tracking-widest">${s.jabatan}</p>
+                    <button onclick="hapusData('${type}', ${s.id})" class="absolute top-4 right-4 text-red-100 hover:text-red-500 transition opacity-0 group-hover:opacity-100">
+                        <i class="fas fa-times-circle text-xl"></i>
+                    </button>
+                </div>
+            `).join('');
+        }
+
+        function renderKegiatan() {
+            const grid = document.getElementById('grid-kegiatan');
+            grid.innerHTML = db.kegiatan.map(k => `
+                <div class="bg-white rounded-[2.5rem] overflow-hidden border border-gray-100 shadow-sm card-hover">
+                    <div class="h-48 overflow-hidden relative">
+                        <img src="${k.foto}" class="w-full h-full object-cover">
+                        <button onclick="hapusData('kegiatan', ${k.id})" class="absolute top-4 right-4 w-10 h-10 bg-white/90 rounded-full text-red-500 shadow-md flex items-center justify-center">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                    <div class="p-8">
+                        <h4 class="font-black text-gray-800 uppercase mb-2">${k.nama}</h4>
+                        <p class="text-xs text-gray-500 leading-relaxed italic line-clamp-2">"${k.desc}"</p>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function renderKeuangan() {
+            const list = document.getElementById('list-keuangan');
+            list.innerHTML = db.keuangan.map(k => `
+                <tr class="hover:bg-gray-50 transition">
+                    <td class="p-6">
+                        <div class="text-[10px] font-black text-orange-500 uppercase">2026</div>
+                        <div class="font-bold text-xs text-gray-400">${k.tgl}</div>
+                    </td>
+                    <td class="p-6">
+                        <div class="font-black text-gray-800 uppercase text-xs">${k.penerima}</div>
+                        <div class="text-[9px] font-bold text-gray-400">${k.uraian}</div>
+                    </td>
+                    <td class="p-6 font-black text-green-600">Rp ${parseInt(k.jumlah).toLocaleString('id-ID')}</td>
+                    <td class="p-6">
+                        ${k.dokumen ? `<i class="fas fa-file-image text-blue-300"></i>` : `<span class="text-xs text-gray-200">-</span>`}
+                    </td>
+                    <td class="p-6">
+                        <button onclick="hapusData('keuangan', ${k.id})" class="text-red-200 hover:text-red-500 transition"><i class="fas fa-trash"></i></button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function refreshSuratSelect() {
+            const sel = document.getElementById('sel-warga-surat');
+            sel.innerHTML = db.penduduk.map(p => `<option value="${p.id}">${p.nama} - ${p.nik}</option>`).join('');
+        }
+
+        function printSurat() {
+            const id = document.getElementById('sel-warga-surat').value;
+            const tipe = document.getElementById('sel-tipe-surat').value;
+            const p = db.penduduk.find(x => x.id == id);
+
+            if(!p) return alert("Pilih penduduk terlebih dahulu!");
+
+            document.getElementById('print-judul-surat').innerText = "SURAT KETERANGAN " + tipe.toUpperCase();
+            document.getElementById('print-nama').innerText = p.nama;
+            document.getElementById('print-nik').innerText = p.nik;
+            document.getElementById('print-ttl').innerText = (p.tempat || '-') + ", " + (p.tgl || '-');
+            document.getElementById('print-kerja').innerText = p.kerja || '-';
+            document.getElementById('print-alamat').innerText = p.alamat || '-';
+            document.getElementById('print-keperluan').innerText = "Surat Keterangan " + tipe + " bagi warga masyarakat yang bersangkutan";
+            document.getElementById('print-tgl-surat').innerText = new Date().toLocaleDateString('id-ID', {day:'numeric', month:'long', year:'numeric'});
+
+            window.print();
+        }
+
+    </script>
+</body>
+</html>
